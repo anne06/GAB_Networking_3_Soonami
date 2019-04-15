@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 jsonResponse = makeHttpRequest(url);
             } catch (IOException e) {
                 // TODO Handle the IOException
+                Log.e(LOG_TAG, "Pb retrieving the earthquake JSON result (doInBackground). ", e);
             }
 
             // Extract relevant fields from the JSON response and create an {@link Event} object
@@ -149,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 url = new URL(stringUrl);
             } catch (MalformedURLException exception) {
                 Log.e(LOG_TAG, "Error with creating URL", exception);
-                return null;
             }
             return url;
         }
@@ -171,19 +171,16 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection.setConnectTimeout(15000 /* milliseconds */);
                 urlConnection.connect();
 
-                int reponseCode = urlConnection.getResponseCode();
-                if (reponseCode >= 200 &&reponseCode < 300) {
-                    Log.i(LOG_TAG, "HTTP response code: " + reponseCode);
+                if (urlConnection.getResponseCode() == 200){
                     inputStream = urlConnection.getInputStream();
-                    Log.e(LOG_TAG, "***" + inputStream.toString() + "***");
                     jsonResponse = readFromStream(inputStream);
                 } else {
-                    Log.e(LOG_TAG, "HTTP response code: " + reponseCode);
+                    Log.e(LOG_TAG, "HTTP response code: " + urlConnection.getResponseCode());
                     jsonResponse = "";
                 }
             } catch (IOException e) {
                 // TODO: Handle the exception
-                Log.e(LOG_TAG, "URL error code: " + urlConnection.getResponseCode());
+                Log.e(LOG_TAG, "Pb retrieving the earthquke JSON result(makeHttpRequest). ", e);
 
             } finally {
                 if (urlConnection != null) {
